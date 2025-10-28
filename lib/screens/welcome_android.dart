@@ -43,7 +43,8 @@ class _WelcomeScreenAndroidState extends State<WelcomeScreenAndroid> {
   }
 
   void _startFloatingAnimation() {
-    timer = Timer.periodic(const Duration(seconds: 3), (_) {
+    // slower animation refresh rate (every 6 seconds instead of 3)
+    timer = Timer.periodic(const Duration(seconds: 6), (_) {
       setState(() {
         final size = MediaQuery.of(context).size;
         for (int i = 0; i < positions.length; i++) {
@@ -64,16 +65,21 @@ class _WelcomeScreenAndroidState extends State<WelcomeScreenAndroid> {
 
   @override
   Widget build(BuildContext context) {
+    // Ghana-inspired mild yellow and black palette
+    final Color backgroundColor = const Color(0xFF1A1A1A); // soft black
+    final Color accentYellow = const Color(0xFFFFD54F); // warm, mild yellow
+
     return Scaffold(
-      backgroundColor: Colors.deepPurple.shade900,
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
           ...List.generate(communityNames.length, (i) {
-            final textColor = Colors.white.withOpacity(0.8);
+            final textColor = accentYellow.withOpacity(0.8);
             final fontSize = 14.0 + random.nextDouble() * 6;
 
             return AnimatedPositioned(
-              duration: const Duration(seconds: 3),
+              duration: const Duration(seconds: 6),
+              curve: Curves.easeInOut,
               left: positions[i].dx,
               top: positions[i].dy,
               child: Text(
@@ -82,33 +88,50 @@ class _WelcomeScreenAndroidState extends State<WelcomeScreenAndroid> {
                   color: textColor,
                   fontSize: fontSize,
                   fontWeight: FontWeight.w500,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      color: Colors.black.withOpacity(0.6),
+                      offset: const Offset(1, 1),
+                    ),
+                  ],
                 ),
               ),
             );
           }),
+          // Centered logo/title
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.chat_bubble_outline, color: Colors.white, size: 80),
+                Icon(Icons.chat_bubble_outline, color: accentYellow, size: 80),
                 const SizedBox(height: 12),
-                const Text(
+                Text(
                   "Welcome to Yenkasa",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: accentYellow,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 6,
+                        color: Colors.black.withOpacity(0.8),
+                        offset: const Offset(2, 2),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // TODO: navigate to login/home
+                    Navigator.pushNamed(context, '/login');
                   },
+
+
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.deepPurple,
+                    backgroundColor: accentYellow,
+                    foregroundColor: backgroundColor,
                     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
